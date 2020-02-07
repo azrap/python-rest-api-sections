@@ -73,11 +73,14 @@ class UserRegister(Resource):
         cursor = connection.cursor()
         data = cls.parser.parse_args()
 
-        # id, username, password. ID is autoincremmenting so no need to put anything so null is fine
+        if User.find_by_username(data['username']):
+            return {"message": "A user with that username already exists"}, 400
+
+        # id, username, password. ID is autoincremmenting so no need to put anything so null is fine        select_query = f"SELECT * FROM users where username={data['username']}"
 
         query = "INSERT INTO users VALUES (NULL, ?, ? )"
-
         cursor.execute(query, (data['username'], data['password'], ))
+
         connection.commit()
         connection.close()
         return {"message": "User created successfully."}, 201

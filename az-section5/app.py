@@ -1,11 +1,12 @@
 from flask import Flask, request
 from flask_restful import Resource, Api, reqparse
 from flask_jwt import JWT, jwt_required, current_identity
-
+from user import UserRegister
 from security import authenticate, identity
 
 app = Flask(__name__)
-app.config['PROPAGATE_EXCEPTIONS'] = True # To allow flask propagating exception even if debug is set to false on app
+# To allow flask propagating exception even if debug is set to false on app
+app.config['PROPAGATE_EXCEPTIONS'] = True
 app.secret_key = 'jose'
 api = Api(app)
 
@@ -13,13 +14,14 @@ jwt = JWT(app, authenticate, identity)
 
 items = []
 
+
 class Item(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument('price',
-        type=float,
-        required=True,
-        help="This field cannot be left blank!"
-    )
+                        type=float,
+                        required=True,
+                        help="This field cannot be left blank!"
+                        )
 
     @jwt_required()
     def get(self, name):
@@ -53,12 +55,15 @@ class Item(Resource):
             item.update(data)
         return item
 
+
 class ItemList(Resource):
     def get(self):
         return {'items': items}
 
+
 api.add_resource(Item, '/item/<string:name>')
 api.add_resource(ItemList, '/items')
+api.add_resource(UserRegister, '/register')
 
 if __name__ == '__main__':
     app.run(debug=True)  # important to mention debug=True

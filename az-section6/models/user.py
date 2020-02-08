@@ -8,6 +8,7 @@ class UserModel(db.Model):
     # tell SQLAlchemy where the model will be stored
     __tablename__ = 'users'
 
+    # primary_key=autoincrementing
     id = db.Column(db.Integer, primary_key=True)
     # define the schema for each column
     username = db.Column(db.String(80))
